@@ -1,0 +1,16 @@
+trainer: hello
+output_dir: $SCRATCH/pytorch-examples/hello
+
+data:
+    name: dummy
+    n_train: 1024
+    n_valid: 1024
+    batch_size: 128
+
+model: none
+loss: none
+optimizer: none
+metrics: none
+
+train:
+    n_epochs: 1
