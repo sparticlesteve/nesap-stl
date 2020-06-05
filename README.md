@@ -1,6 +1,15 @@
-# deep-fmri
+# NESAP Extreme Spatio-Temporal Learning
 
-deep learning on large spatio-temporal fMRI data
+Deep learning on large spatio-temporal data, including fMRI and climate data.
+
+## Datasets
+
+- Moving MNIST
+- Brain fMRI
+
+## Models
+
+- PredRNN++
 
 ## Package layout
 
