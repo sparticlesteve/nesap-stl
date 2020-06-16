@@ -2,27 +2,43 @@
 PyTorch dataset description for a random dummy dataset.
 """
 
-# Compatibility
-from __future__ import print_function
-
 # Externals
 import torch
-from torch.utils.data import TensorDataset
 
-def get_datasets(n_train=1024, n_valid=1024,
-                 input_shape=[3, 32, 32], target_shape=[],
-                 n_classes=None):
+class RandomDataset(torch.utils.data.Dataset):
+    """Random number dataset.
+
+    For now, generating all requested samples up front.
+    TODO: allow to either generate samples on-the-fly, or set unique number to
+    pre-generate.
+    """
+
+    def __init__(self, n_samples, input_shape, target_shape=None, n_classes=None):
+        self.x = torch.randn([n_samples] + input_shape)
+        self.y = None
+        if target_shape is not None:
+            if n_classes is not None:
+                self.y = torch.randint(n_classes, [n_samples] + target_shape,
+                                       dtype=torch.long)
+            else:
+                self.y = torch.randn([n_samples] + target_shape)
+
+    def __getitem__(self, index):
+        if self.y is not None:
+            return self.x[index], self.y[index]
+        else:
+            return self.x[index]
+
+    def __len__(self):
+        return len(self.x)
+
+def get_datasets(n_train, n_valid, input_shape, **kwargs):
     """Construct and return random number datasets"""
-    train_x = torch.randn([n_train] + input_shape)
-    valid_x = torch.randn([n_valid] + input_shape)
-    if n_classes is not None:
-        train_y = torch.randint(n_classes, [n_train] + target_shape, dtype=torch.long)
-        valid_y = torch.randint(n_classes, [n_valid] + target_shape, dtype=torch.long)
+    train_dataset = RandomDataset(n_train, input_shape, **kwargs)
+    if n_valid > 0:
+        valid_dataset = RandomDataset(n_valid, input_shape, **kwargs)
     else:
-        train_y = torch.randn([n_train] + target_shape)
-        valid_y = torch.randn([n_valid] + target_shape)
-    train_dataset = TensorDataset(train_x, train_y)
-    valid_dataset = TensorDataset(valid_x, valid_y)
+        valid_dataset = None
     return train_dataset, valid_dataset, {}
 
 def _test():
