@@ -1,5 +1,5 @@
 """
-PyTorch dataset description for a random dummy dataset.
+PyTorch dataset description for a random synthetic dataset.
 """
 
 # Externals
