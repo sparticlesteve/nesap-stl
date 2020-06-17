@@ -37,6 +37,9 @@ class AutoRegressiveTrainer(BasicTrainer):
             sum_loss += batch_loss.item()
             utils.metrics.update_metrics(self.metrics, batch_output, batch_target)
             self.logger.debug('batch %i loss %.3f', i, batch_loss.item())
+            self.logger.debug('cuda mem %g max %g',
+                              torch.cuda.memory_allocated()/1024**3,
+                              torch.cuda.max_memory_allocated()/1024**3)
 
         train_loss = sum_loss / (i + 1)
         metrics_summary = utils.metrics.get_results(self.metrics)
