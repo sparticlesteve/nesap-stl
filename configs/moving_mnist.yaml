@@ -21,4 +21,4 @@ optimizer:
     lr: 0.001
 
 train:
-    n_epochs: 32
+    n_epochs: 128
