@@ -1,7 +1,7 @@
 # This config is for testing PredRNN++ on climate data
 # WORK IN PROGRESS
 
-output_dir: $SCRATCH/nesap-stl/predrnn3d-climate/results
+output_dir: $SCRATCH/nesap-stl/predrnn-climate/results_001
 
 trainer: auto_regressive
 
@@ -9,7 +9,7 @@ data:
     name: climate
     data_file: /global/cfs/cdirs/m1759/sfarrell/nesap-stl/data/climate.npz
     patch_size: 4
-    n_train: 8192
+    n_train: 10240
     n_valid: 2048
     seq_len: 16
     batch_size: 4
