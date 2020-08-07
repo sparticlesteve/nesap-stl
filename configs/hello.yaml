@@ -5,6 +5,9 @@ data:
     name: random
     n_train: 1024
     n_valid: 1024
+    input_shape: [3, 32, 32]
+    target_shape: []
+    n_classes: 10
     batch_size: 128
 
 model: none
