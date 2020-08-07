@@ -11,7 +11,6 @@ import logging
 # Externals
 import numpy as np
 import torch
-from sklearn import decomposition
 
 # Locals
 from utils.preprocess import reshape_patch
