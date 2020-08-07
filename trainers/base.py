@@ -26,17 +26,22 @@ class BaseTrainer(object):
     logging of summaries, and checkpoints.
     """
 
-    def __init__(self, output_dir=None, gpu=None,
+    def __init__(self, output_dir=None, gpus=[],
                  distributed=False, rank=0):
         self.logger = logging.getLogger(self.__class__.__name__)
         self.output_dir = (os.path.expandvars(output_dir)
                            if output_dir is not None else None)
-        self.gpu = gpu
-        if gpu is not None:
-            self.device = 'cuda:%i' % gpu
-            torch.cuda.set_device(gpu)
+        self.gpus = gpus
+        if len(gpus) > 0:
+            self.devices = [f'cuda:{gpu}' for gpu in gpus]
+            # Use first gpu for compatibility with single-gpu setups
+            self.gpu = self.gpus[0]
+            self.device = self.devices[0]
+            torch.cuda.set_device(self.gpu)
         else:
-            self.device = 'cpu'
+            self.devices = ['cpu']
+            self.device = self.devices[0]
+            self.gpu = None
         self.distributed = distributed
         self.rank = rank
         self.summaries = None
@@ -90,6 +95,7 @@ class BaseTrainer(object):
             checkpoint_id = self.summaries.epoch.iloc[-1]
         checkpoint_file = self._get_checkpoint_file(checkpoint_id)
         self.logger.info('Loading checkpoint at %s', checkpoint_file)
+        # TODO: how to handle map-location for multi-gpu models?
         self.load_state_dict(torch.load(checkpoint_file, map_location=self.device))
 
     def state_dict(self):

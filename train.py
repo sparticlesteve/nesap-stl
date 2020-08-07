@@ -73,11 +73,13 @@ def main():
         distributed=distributed, **config['data'])
 
     # Load the trainer
+    # Assuming single gpu per rank, here
     gpu = (rank % args.ranks_per_node) if args.rank_gpu else args.gpu
-    if gpu is not None:
-        logging.info('Using GPU %i', gpu)
+    gpus = [gpu] if gpu is not None else []
+    if len(gpus) > 0:
+        logging.info('Using GPUs %s', gpus)
     trainer = get_trainer(name=config['trainer'], distributed=distributed,
-                          rank=rank, output_dir=output_dir, gpu=gpu)
+                          rank=rank, output_dir=output_dir, gpus=gpus)
 
     # Build the model and optimizer
     trainer.build(config)
