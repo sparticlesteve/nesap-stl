@@ -40,6 +40,7 @@ class CausalLSTMStack(nn.Module):
 
         self.ghu = ghu(filter_size, channels[0], layer_norm=layer_norm)
 
+
     def forward(self, x, h_prev=None, c_prev=None, m_prev=None, z_prev=None):
         if h_prev is None:
             h_prev = [None] * self.num_layers

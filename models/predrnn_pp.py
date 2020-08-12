@@ -26,6 +26,7 @@ class PredRNNPP(torch.nn.Module):
         else:
             raise ValueError(f'num_dims value {num_dims} not allowed')
 
+
     def forward(self, x):
 
         # Initialize hidden states
