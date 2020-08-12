@@ -1,0 +1,24 @@
+output_dir: $SCRATCH/nesap-stl/moving-mnist/results
+
+trainer: auto_regressive
+
+data:
+    name: moving_mnist
+    data_dir: /global/cfs/cdirs/m1759/sfarrell/nesap-stl/data
+    #n_train: 1024
+    #n_valid: 1024
+    batch_size: 8
+    patch_size: 4
+
+model:
+    name: predrnn_pp
+
+loss:
+    name: MSELoss
+
+optimizer:
+    name: Adam
+    lr: 0.001
+
+train:
+    n_epochs: 128

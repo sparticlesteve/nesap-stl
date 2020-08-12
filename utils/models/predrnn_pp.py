@@ -13,16 +13,12 @@ class PredRNNPP(torch.nn.Module):
     """The PredRNN++ model"""
 
     def __init__(self, filter_size=3, num_dims=2,
-                 num_hidden=[128, 64, 64, 64, 16], devices):
+                 num_hidden=[128, 64, 64, 64, 16]):
         super().__init__()
 
         self.clstm = CausalLSTMStack(filter_size=filter_size,
                                      num_dims=num_dims,
-                                     channels=num_hidden,
-                                     devices=devices)    ## adding device list arg
-
-        self.devices = devices
-        
+                                     channels=num_hidden)
         if num_dims == 2:
             self.decoder = torch.nn.Conv2d(num_hidden[-1], num_hidden[-1], 1)
         elif num_dims == 3:
@@ -30,8 +26,7 @@ class PredRNNPP(torch.nn.Module):
         else:
             raise ValueError(f'num_dims value {num_dims} not allowed')
 
-        self.decoder.to(self.devices[0])    ## decoder in gpu_0 same with ghu and the first 2 layers of CausalLSTMStack
-        
+
     def forward(self, x):
 
         # Initialize hidden states
