@@ -1,0 +1,27 @@
+# This config is for testing PredRNN++ on random 3D+T data
+
+output_dir: $SCRATCH/nesap-stl/predrnn3d-test/results
+
+trainer: auto_regressive
+
+data:
+    name: random
+    n_train: 8
+    n_valid: 8
+    input_shape: [20, 20, 64, 64, 64]
+    batch_size: 1
+
+model:
+    name: predrnn_pp
+    num_dims: 3
+    num_hidden: [128, 64, 64, 64, 16]
+
+loss:
+    name: MSELoss
+
+optimizer:
+    name: Adam
+    lr: 0.001
+
+train:
+    n_epochs: 2
