@@ -2,7 +2,7 @@
 
 output_dir: $SCRATCH/nesap-stl/predrnn3d-test/results
 
-trainer: auto_regressive
+trainer: model_parallel_auto_regressive
 
 data:
     name: random
