@@ -14,7 +14,7 @@ class ModelParallelAutoRegressiveTrainer(BasicTrainer):
     """Trainer code for basic classification problems."""
 
     def __init__(self, **kwargs):
-        super(AutoRegressiveTrainer, self).__init__(**kwargs)
+        super(ModelParallelAutoRegressiveTrainer, self).__init__(**kwargs)
 
     def build(self, config):
         """Instantiate our model, optimizer, loss function"""
