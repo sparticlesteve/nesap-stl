@@ -16,14 +16,15 @@ class BasicTrainer(BaseTrainer):
 
     def __init__(self, **kwargs):
         super(BasicTrainer, self).__init__(**kwargs)
-
+        
+        
     def build(self, config):
         """Instantiate our model, optimizer, loss function"""
 
         # Construct the model
-        self.model = get_model(**config['model']).to(self.device)
+        self.model = get_model(**config['model'])#.to(self.device)
         if self.distributed:
-            device_ids = [self.gpu] if self.gpu is not None else None
+            device_ids = [self.devices] if self.devices is not None else None
             self.model = DistributedDataParallel(self.model, device_ids=device_ids)
 
         # Construct the loss function

@@ -12,15 +12,17 @@ from .layers import CausalLSTMStack
 class PredRNNPP(torch.nn.Module):
     """The PredRNN++ model"""
 
-    def __init__(self, filter_size=3, num_dims=2,
-                 num_hidden=[128, 64, 64, 64, 16], devices):
+    def __init__(self, devices, filter_size=3, num_dims=2,
+                 num_hidden=[128, 64, 64, 64, 16]):
         super().__init__()
 
-        self.clstm = CausalLSTMStack(filter_size=filter_size,
+        self.clstm = CausalLSTMStack(devices,
+                                     filter_size=filter_size,
                                      num_dims=num_dims,
                                      channels=num_hidden,
-                                     devices=devices)    ## adding device list arg
+                                     layer_norm=True)    ## adding device list arg
 
+#        devices = ['cuda:{}'.format(device) for device in devices]
         self.devices = devices
         
         if num_dims == 2:
@@ -46,5 +48,5 @@ class PredRNNPP(torch.nn.Module):
         # Stack outputs along time axis
         return torch.stack(outputs, dim=1)
 
-def build_model(**kwargs):
-    return PredRNNPP(**kwargs)
+def build_model(devices, **kwargs):
+    return PredRNNPP(devices, **kwargs)

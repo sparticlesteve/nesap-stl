@@ -76,11 +76,13 @@ def main():
     # Assuming single gpu per rank, here
     gpu = (rank % args.ranks_per_node) if args.rank_gpu else args.gpu
     gpus = [gpu] if gpu is not None else []
+    gpus = [0, 1]    ## hard coded for simple test
     if len(gpus) > 0:
         logging.info('Using GPUs %s', gpus)
-    trainer = get_trainer(name=config['trainer'], distributed=distributed,
-                          rank=rank, output_dir=output_dir, gpus=gpus)
+    trainer = get_trainer(devices=gpus, name=config['trainer'], distributed=distributed,
+                          rank=rank, output_dir=output_dir)
 
+    print('gpu device list is {}'.format(gpus))
     # Build the model and optimizer
     trainer.build(config)
 

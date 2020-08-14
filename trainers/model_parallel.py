@@ -6,54 +6,15 @@ This module defines a trainer for auto-regressive sequential models.
 import torch
 from torch.nn.parallel import DistributedDataParallel
 
-from models import get_model
-
 # Locals
 from .basic import BasicTrainer
 import utils.metrics
 
-class ModelParallelAutoRegressiveTrainer(BasicTrainer):
+class model_parallel(BasicTrainer):
     """Trainer code for basic classification problems."""
 
-    def __init__(self, devices, **kwargs):
-        super(ModelParallelAutoRegressiveTrainer, self).__init__(**kwargs)
-
-        devices = ['cuda:{}'.format(device) for device in devices]
-        self.devices = devices
-       
-    def build(self, config):
-        """Instantiate our model, optimizer, loss function"""
-
-        # Construct the model
-        # TODO change this for model parallelism, e.g. pass gpu list
-        # into the get_model function (they will get passed to PredRNNPP.__init__)
-        self.model = get_model(self.devices, **config['model'])   ##.to(self.device)
-
-        # Can try to re-enable data-parallelism later, following:
-        # pytorch.org/tutorials/intermediate/ddp_tutorial.html#combine-ddp-with-model-parallelism
-        #if self.distributed:
-        #    device_ids = [self.gpu] if self.gpu is not None else None
-        #    self.model = DistributedDataParallel(self.model, device_ids=device_ids)
-
-        # Construct the loss function
-        loss_config = config['loss']
-        Loss = getattr(torch.nn, loss_config.pop('name'))
-        self.loss_func = Loss(**loss_config)
-
-        # Construct the optimizer
-        optimizer_config = config['optimizer']
-        Optim = getattr(torch.optim, optimizer_config.pop('name'))
-        self.optimizer = Optim(self.model.parameters(), **optimizer_config)
-
-        # Construct the metrics
-        metrics_config = config.get('metrics', {})
-        self.metrics = utils.metrics.get_metrics(metrics_config)
-
-        # Print a model summary
-        if self.rank == 0:
-            self.logger.info(self.model)
-            self.logger.info('Number of parameters: %i',
-                             sum(p.numel() for p in self.model.parameters()))
+    def __init__(self, **kwargs):
+        super(model_parallel, self).__init__(devices, **kwargs)
 
     def train_epoch(self, data_loader):
         """Train for one epoch"""
@@ -66,7 +27,7 @@ class ModelParallelAutoRegressiveTrainer(BasicTrainer):
 
         # Loop over training batches
         for i, batch in enumerate(data_loader):
-            batch = batch.to(self.devices[0])
+            batch = batch.to(self.device)
             self.model.zero_grad()
             batch_input, batch_target = batch[:,:-1], batch[:,1:]
             batch_output = self.model(batch_input)
@@ -99,7 +60,7 @@ class ModelParallelAutoRegressiveTrainer(BasicTrainer):
 
         # Loop over batches
         for i, batch in enumerate(data_loader):
-            batch = batch.to(self.device[0])
+            batch = batch.to(self.device)
             batch_input, batch_target = batch[:,:-1], batch[:,1:]
             batch_output = self.model(batch_input)
             batch_loss = self.loss_func(batch_output, batch_target).item()
@@ -117,8 +78,8 @@ class ModelParallelAutoRegressiveTrainer(BasicTrainer):
         # Return summary
         return dict(loss=valid_loss, **metrics_summary)
 
-def get_trainer(devices, **kwargs):
-    return ModelParallelAutoRegressiveTrainer(devices, **kwargs)
+def get_trainer(**kwargs):
+    return model_parallel(**kwargs)
 
 def _test():
     t = AutoRegressiveTrainer(output_dir='./')
