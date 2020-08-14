@@ -4,5 +4,7 @@ module purge
 module load esslurm
 module load pytorch/v1.5.0-gpu
 
-srun -C gpu -G 1 -c 10 -t 1:00:00 \
-    python train.py configs/predrnn3d_test.yaml --rank-gpu -v
+nTasks=1
+
+srun -C gpu -n $nTasks --gpus-per-task 2 -c 20 -t 30 \
+    python train.py configs/predrnn3d_stlearn.yaml --rank-gpu -v

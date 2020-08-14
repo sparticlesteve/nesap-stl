@@ -112,15 +112,13 @@ class CausalLSTMStack(nn.Module):
         ################
         ## gpu_1 below
         
-#        h_new, h_prev = h_new.to(self.devices[1]), h_prev.to(self.devices[1])
-        c_prev, m = c_prev.to(self.devices[1]), m.to(self.devices[1])
-        
+        m = m.to(self.devices[1])
+
         for k in range(2, self.num_layers):
             l = k-2
-            h, c, m = self.lstms_2[l](h_new[k - 1], h_prev[k], c_prev[k], m)
+            h, c, m = self.lstms_2[l](h_new[k-1].to(self.devices[1]), h_prev[k], c_prev[k], m)
             h_new[k], c_new[k] = h, c
 
-        h_new, c_new = h_new.to(self.devices[0]), c_new.to(self.devices[0])
-        m, z = m.to(self.devices[0]), z.to(self.devices[0])
-        
+        m = m.to(self.devices[0])
+
         return h_new, c_new, m, z

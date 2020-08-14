@@ -43,7 +43,7 @@ class PredRNNPP(torch.nn.Module):
         # Loop over the sequence
         for t in range(x.shape[1]):
             h, c, m, z = self.clstm(x[:,t], h, c, m, z)
-            outputs.append(self.decoder(h[-1])) #.permute(0, -1, 1, 2)
+            outputs.append(self.decoder(h[-1].to(self.devices[0]))) #.permute(0, -1, 1, 2)
 
         # Stack outputs along time axis
         return torch.stack(outputs, dim=1)
