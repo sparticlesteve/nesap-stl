@@ -1,5 +1,6 @@
 import torch
 from torch import nn
+import numpy as np
 
 from . import CausalLSTMCell2d, CausalLSTMCell3d, GHU2d, GHU3d
 
@@ -111,7 +112,7 @@ class CausalLSTMStack(nn.Module):
         ################
         ## gpu_1 below
         
-        h_new, h_prev = h_new.to(self.devices[1]), h_prev.to(self.devices[1])
+#        h_new, h_prev = h_new.to(self.devices[1]), h_prev.to(self.devices[1])
         c_prev, m = c_prev.to(self.devices[1]), m.to(self.devices[1])
         
         for k in range(2, self.num_layers):
