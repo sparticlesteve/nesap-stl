@@ -2,10 +2,19 @@
 
 Deep learning on large spatio-temporal data, including fMRI and climate data.
 
+## Model-parallel PredRNN++ for large spatio-temporal data
+
+This example currently uses 2 gpus on the Cori-GPU system with random data.
+
+The command to launch with slurm is in [scripts/test_prnn3d.sh](scripts/test_prnn3d.sh).
+
+The configuration file is at [configs/predrnn3d_stlearn.yaml](configs/predrnn3d_stlearn.yaml).
+
 ## Datasets
 
 - Moving MNIST
 - Brain fMRI
+- Random data
 
 ## Models
 

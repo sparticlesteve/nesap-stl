@@ -1,4 +1,4 @@
-# This config is for testing PredRNN++ on random 3D+T data
+# This config is for testing model-parallel PredRNN++ on random 3D+T data
 
 output_dir: $SCRATCH/nesap-stl/predrnn3d-test/results
 
