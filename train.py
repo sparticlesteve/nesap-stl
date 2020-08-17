@@ -78,9 +78,13 @@ def main():
     if args.gpus is not None:
         gpus = args.gpus
     elif args.gpus_per_rank is not None:
-        local_rank = rank % args.ranks_per_node
-        gpus = [local_rank*args.gpus_per_rank + i
-                for i in range(args.gpus_per_rank)]
+        local_size = min(args.ranks_per_node, n_ranks)
+        local_rank = rank % local_size
+        gpus = [i * local_size + local_rank for i in range(args.gpus_per_rank)]
+
+        # Causes nccl collective errors in model broadcast
+        #gpus = [local_rank*args.gpus_per_rank + i
+        #        for i in range(args.gpus_per_rank)]
     else:
         gpus = []
     if len(gpus) > 0:
