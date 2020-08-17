@@ -25,12 +25,12 @@ def parse_args():
             help='YAML configuration file')
     add_arg('-d', '--distributed-backend', choices=['mpi', 'nccl', 'gloo'],
             help='Specify the distributed backend to use')
-    add_arg('--gpu', type=int,
-            help='Choose a specific GPU by ID')
+    add_arg('--gpus', type=int, nargs='+',
+            help='Choose specific GPUs by device ID')
     add_arg('--ranks-per-node', type=int, default=8,
             help='Specifying number of ranks per node')
-    add_arg('--rank-gpu', action='store_true',
-            help='Choose GPU according to local rank')
+    add_arg('--gpus-per-rank', type=int,
+            help='Number of gpus per worker rank')
     add_arg('--resume', action='store_true',
             help='Resume training from last checkpoint')
     add_arg('-v', '--verbose', action='store_true',
@@ -72,13 +72,19 @@ def main():
     train_data_loader, valid_data_loader = get_data_loaders(
         distributed=distributed, **config['data'])
 
-    # Load the trainer
-    # Assuming single gpu per rank, here
-    gpu = (rank % args.ranks_per_node) if args.rank_gpu else args.gpu
-    gpus = [gpu] if gpu is not None else []
-    gpus = [0, 1]    ## hard coded for simple test
+    # Choose GPUs
+    if args.gpus is not None:
+        gpus = args.gpus
+    elif args.gpus_per_rank is not None:
+        local_rank = rank % args.ranks_per_node
+        gpus = [local_rank*args.gpus_per_rank + i
+                for i in range(args.gpus_per_rank)]
+    else:
+        gpus = []
     if len(gpus) > 0:
         logging.info('Using GPUs %s', gpus)
+
+    # Load the trainer
     trainer = get_trainer(name=config['trainer'], distributed=distributed,
                           devices=gpus, rank=rank, output_dir=output_dir)
 
