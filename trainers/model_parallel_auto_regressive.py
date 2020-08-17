@@ -24,17 +24,12 @@ class ModelParallelAutoRegressiveTrainer(BasicTrainer):
     def build(self, config):
         """Instantiate our model, optimizer, loss function"""
 
-        # Construct the model
-        # TODO change this for model parallelism, e.g. pass gpu list
-        # into the get_model function (they will get passed to PredRNNPP.__init__)
-        self.model = get_model(devices=self.devices, **config['model'])   ##.to(self.device)
+        # Construct the model - updated for multi-gpu model-parallelism
+        self.model = get_model(devices=self.devices, **config['model'])
 
-        # Can try to re-enable data-parallelism later, following:
-        # pytorch.org/tutorials/intermediate/ddp_tutorial.html#combine-ddp-with-model-parallelism
+        # Trying to re-enable data-parallelism later, following:
+        # https://pytorch.org/tutorials/intermediate/ddp_tutorial.html#combine-ddp-with-model-parallelism
         self.model = DistributedDataParallel(self.model)
-        #if self.distributed:
-        #    device_ids = [self.gpu] if self.gpu is not None else None
-        #    self.model = DistributedDataParallel(self.model, device_ids=device_ids)
 
         # Construct the loss function
         loss_config = config['loss']
