@@ -31,6 +31,7 @@ class ModelParallelAutoRegressiveTrainer(BasicTrainer):
 
         # Can try to re-enable data-parallelism later, following:
         # pytorch.org/tutorials/intermediate/ddp_tutorial.html#combine-ddp-with-model-parallelism
+        self.model = DistributedDataParallel(self.model)
         #if self.distributed:
         #    device_ids = [self.gpu] if self.gpu is not None else None
         #    self.model = DistributedDataParallel(self.model, device_ids=device_ids)
