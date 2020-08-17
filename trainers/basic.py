@@ -16,8 +16,7 @@ class BasicTrainer(BaseTrainer):
 
     def __init__(self, **kwargs):
         super(BasicTrainer, self).__init__(**kwargs)
-        
-        
+
     def build(self, config):
         """Instantiate our model, optimizer, loss function"""
 

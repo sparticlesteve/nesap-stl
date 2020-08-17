@@ -7,7 +7,7 @@ constructing the model as well as training and evaluation.
 
 import importlib
 
-def get_trainer(devices, name, **trainer_args):
+def get_trainer(name, **trainer_args):
     """Factory function for constructing a Trainer"""
     module = importlib.import_module('.' + name, 'trainers')
-    return module.get_trainer(devices, **trainer_args)
+    return module.get_trainer(**trainer_args)

@@ -27,7 +27,7 @@ class ModelParallelAutoRegressiveTrainer(BasicTrainer):
         # Construct the model
         # TODO change this for model parallelism, e.g. pass gpu list
         # into the get_model function (they will get passed to PredRNNPP.__init__)
-        self.model = get_model(self.devices, **config['model'])   ##.to(self.device)
+        self.model = get_model(devices=self.devices, **config['model'])   ##.to(self.device)
 
         # Can try to re-enable data-parallelism later, following:
         # pytorch.org/tutorials/intermediate/ddp_tutorial.html#combine-ddp-with-model-parallelism
