@@ -6,6 +6,7 @@ Main training script for NERSC PyTorch examples
 import os
 import argparse
 import logging
+import socket
 
 # Externals
 import yaml
@@ -62,7 +63,8 @@ def main():
     log_file = (os.path.join(output_dir, 'out_%i.log' % rank)
                 if output_dir is not None else None)
     config_logging(verbose=args.verbose, log_file=log_file, append=args.resume)
-    logging.info('Initialized rank %i out of %i', rank, n_ranks)
+    logging.info('Initialized rank %i out of %i on host %s',
+                 rank, n_ranks, socket.gethostname())
     try_barrier()
     if rank == 0:
         logging.info('Configuration: %s' % config)
