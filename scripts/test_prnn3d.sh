@@ -1,8 +1,8 @@
 #!/bin/bash
 
 module purge
-module load esslurm
-module load pytorch/v1.5.0-gpu
+module load cgpu
+module load pytorch/v1.6.0-gpu
 
 nTasks=1
 gpusPerTask=2
