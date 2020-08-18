@@ -23,7 +23,7 @@ def parse_args():
     add_arg = parser.add_argument
     add_arg('config', nargs='?', default='configs/hello.yaml',
             help='YAML configuration file')
-    add_arg('-d', '--distributed-backend', choices=['mpi', 'nccl', 'gloo'],
+    add_arg('-d', '--distributed-backend', choices=['mpi', 'nccl', 'nccl-lsf', 'gloo'],
             help='Specify the distributed backend to use')
     add_arg('--gpu', type=int,
             help='Choose a specific GPU by ID')
