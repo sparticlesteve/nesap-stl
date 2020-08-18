@@ -39,6 +39,20 @@ def init_workers_nccl_file():
                             init_method=sync_file)
     return rank, n_ranks
 
+def init_workers_nccl_lsf():
+    """Initialize workers with NCCL backend and LSF environment"""
+    import subprocess
+    get_master = "echo $(cat {} | sort | uniq | grep -v batch | grep -v login | head -1)".format(
+        os.environ['LSB_DJOB_HOSTFILE'])
+    os.environ['MASTER_ADDR'] = str(subprocess.check_output(get_master, shell=True))[2:-3]
+    os.environ['MASTER_PORT'] = "23456"
+    os.environ['RANK'] = os.environ['OMPI_COMM_WORLD_RANK']
+    os.environ['WORLD_SIZE'] = os.environ['OMPI_COMM_WORLD_SIZE']
+    rank = int(os.environ['RANK'])
+    n_ranks = int(os.environ['WORLD_SIZE'])
+    dist.init_process_group(backend='nccl', world_size=n_ranks, rank=rank)
+    return rank, n_ranks
+
 def init_workers_mpi():
     """Initialize workers with MPI backend"""
     dist.init_process_group(backend='mpi')
@@ -62,6 +76,8 @@ def init_workers(backend=None):
         rank, n_ranks = init_workers_mpi()
     elif backend == 'nccl':
         rank, n_ranks = init_workers_nccl_file()
+    elif backend == 'nccl-lsf':
+        rank, n_ranks = init_workers_nccl_lsf()
     elif backend == 'gloo':
         rank, n_ranks = init_workers_gloo_file()
     return rank, n_ranks
