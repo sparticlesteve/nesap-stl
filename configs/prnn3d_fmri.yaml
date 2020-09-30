@@ -1,0 +1,29 @@
+# This config is for testing PredRNN++ on fMRI data
+
+output_dir: $SCRATCH/nesap-stl/prnn3d-fmri/results
+
+trainer: auto_regressive
+
+data:
+    name: fmri
+    data_dir: /global/cscratch1/sd/yanzhang/data_brain/fmri_numpy_380 #fmri_numpy_383
+    n_train: 8
+    n_valid: 8
+    time_frames: 32
+    patch_size: 2
+    batch_size: 1
+
+model:
+    name: predrnn_pp
+    num_dims: 3
+    num_hidden: [8, 8, 8, 8]
+
+loss:
+    name: MSELoss
+
+optimizer:
+    name: Adam
+    lr: 0.001
+
+train:
+    n_epochs: 2
