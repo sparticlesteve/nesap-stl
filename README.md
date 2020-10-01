@@ -6,6 +6,7 @@ Deep learning on large spatio-temporal data, including fMRI and climate data.
 
 - Moving MNIST
 - Brain fMRI
+- Climate
 
 ## Models
 
